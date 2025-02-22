@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -13,7 +14,6 @@ import {
   PencilLine,
 } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
-import { useEffect } from 'react';
 
 const createActivitySchema = z.object({
   id: z.string().optional(),
@@ -39,7 +39,7 @@ const createActivitySchema = z.object({
 
 type ActivityFormData = z.infer<typeof createActivitySchema>;
 
-export default function CadastroPage() {
+function CadastroContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const id = searchParams.get('id');
@@ -50,8 +50,6 @@ export default function CadastroPage() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    reset,
     setValue,
   } = useForm<ActivityFormData>({
     resolver: zodResolver(createActivitySchema),
@@ -137,6 +135,7 @@ export default function CadastroPage() {
             )}
           </h1>
         </header>
+
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {isEditing && <input type="hidden" {...register('id')} />}
           <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2">
@@ -294,5 +293,19 @@ export default function CadastroPage() {
         </form>
       </div>
     </div>
+  );
+}
+
+export default function CadastroPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          Carregando formulário...
+        </div>
+      }
+    >
+      <CadastroContent />
+    </Suspense>
   );
 }
