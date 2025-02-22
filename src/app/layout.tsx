@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import Link from 'next/link';
 import { ThemeSwitcher } from '@/app/components/themeSwitcher';
+import { Toaster } from 'react-hot-toast';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -65,6 +66,7 @@ export default function RootLayout({
         </nav>
 
         <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8 transition-colors duration-200">
+          <Toaster />
           {children}
         </main>
       </body>
