@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { getActivities, removeActivity } from '@/app/lib/data';
 import { Activity } from '@/app/types/activity';
+import { ArrowDown } from 'lucide-react';
 
 export default function ListagemPage() {
   const [activities, setActivities] = useState<Activity[]>([]);
@@ -19,13 +20,61 @@ export default function ListagemPage() {
     }
   };
 
+  const handleExportCSV = () => {
+    const csvHeader = [
+      'Nome',
+      'Responsável',
+      'Data',
+      'Descrição',
+      'Participantes',
+    ].join(',');
+
+    const csvBody = activities
+      .map((activity) => {
+        const date = new Date(activity.data).toLocaleDateString('pt-BR');
+        const participants = activity.participantes.join('; ');
+        return [
+          `"${activity.nome}"`,
+          `"${activity.responsavel}"`,
+          `"${date}"`,
+          `"${activity.descricao.replace(/"/g, '""')}"`,
+          `"${participants}"`,
+        ].join(',');
+      })
+      .join('\n');
+
+    const csv = `${csvHeader}\n${csvBody}`;
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'atividades-ufc-sobral.csv');
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
-        <div className="mb-8 pb-4 border-b dark:border-gray-700">
+        <div className="mb-8 pb-4 border-b dark:border-gray-700 flex justify-between items-center">
           <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100">
             Atividades Cadastradas
           </h1>
+
+          <button
+            onClick={handleExportCSV}
+            className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 
+              text-white text-xs rounded-lg transition-colors duration-200"
+            title="Exportar para CSV"
+          >
+            <ArrowDown className="h-4 w-4" />
+            <span>Exportar CSV</span>
+          </button>
         </div>
 
         <div className="space-y-4">
