@@ -1,14 +1,22 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { addActivity } from '@/app/lib/data';
-import { AlertCircle, CheckCircle2, ArrowLeft, Loader2 } from 'lucide-react';
+import { addActivity, getActivityById, updateActivity } from '@/app/lib/data';
+import {
+  AlertCircle,
+  CheckCircle2,
+  ArrowLeft,
+  Loader2,
+  PencilLine,
+} from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
+import { useEffect } from 'react';
 
-const activitySchema = z.object({
+const createActivitySchema = z.object({
+  id: z.string().optional(),
   nome: z
     .string()
     .min(3, 'O nome deve ter pelo menos 3 caracteres')
@@ -17,69 +25,97 @@ const activitySchema = z.object({
     .string()
     .min(3, 'O responsável deve ter pelo menos 3 caracteres')
     .max(100, 'O responsável deve ter no máximo 100 caracteres'),
-  data: z
-    .string()
-    .refine((val) => new Date(val) > new Date(), 'A data deve ser futura'),
+  data: z.string().refine((val) => {
+    const selectedDate = new Date(val);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return selectedDate >= today;
+  }, 'A data deve ser igual ou posterior a hoje'),
   descricao: z
     .string()
     .min(10, 'A descrição deve ter pelo menos 10 caracteres')
     .max(500, 'A descrição deve ter no máximo 500 caracteres'),
 });
 
-type ActivityFormData = z.infer<typeof activitySchema>;
+type ActivityFormData = z.infer<typeof createActivitySchema>;
 
 export default function CadastroPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id');
+  const isEditing = !!id;
+  const activity = isEditing ? getActivityById(id) : null;
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     reset,
+    setValue,
   } = useForm<ActivityFormData>({
-    resolver: zodResolver(activitySchema),
+    resolver: zodResolver(createActivitySchema),
+    defaultValues: {
+      id: activity?.id || '',
+      nome: activity?.nome || '',
+      responsavel: activity?.responsavel || '',
+      data: activity?.data
+        ? new Date(activity.data).toISOString().split('T')[0]
+        : '',
+      descricao: activity?.descricao || '',
+    },
   });
+
+  useEffect(() => {
+    if (isEditing && activity) {
+      setValue('id', activity.id);
+      setValue('nome', activity.nome);
+      setValue('responsavel', activity.responsavel);
+      setValue('data', new Date(activity.data).toISOString().split('T')[0]);
+      setValue('descricao', activity.descricao);
+    }
+  }, [isEditing, activity, setValue]);
 
   const onSubmit = async (data: ActivityFormData) => {
     try {
-      addActivity({
-        ...data,
+      const activityData = {
+        nome: data.nome,
+        responsavel: data.responsavel,
         data: new Date(data.data).toISOString(),
-      });
+        descricao: data.descricao,
+      };
 
-      await new Promise((resolve) => setTimeout(resolve, 500));
-
-      toast.success(
-        <div className="flex items-center gap-2">
-          <span>Atividade registrada com sucesso!</span>
-        </div>,
-        {
+      if (isEditing && data.id) {
+        updateActivity(data.id, activityData);
+        toast.success('Atividade atualizada com sucesso!', {
+          icon: <CheckCircle2 className="text-green-500" />,
+          className: 'dark:bg-gray-800 dark:text-white',
           duration: 4000,
           position: 'top-right',
-          className:
-            'dark:bg-gray-800 dark:text-gray-100 border dark:border-gray-700',
-        }
-      );
+        });
+      } else {
+        addActivity(activityData);
+        toast.success('Atividade criada com sucesso!', {
+          icon: <CheckCircle2 className="text-green-500" />,
+          className: 'dark:bg-gray-800 dark:text-white',
+          duration: 4000,
+          position: 'top-right',
+        });
+      }
 
-      reset();
       router.push('/listagem');
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
-      toast.error(
-        <div className="flex items-center gap-2">
-          <AlertCircle className="h-5 w-5 text-red-600" />
-          <span>Erro ao cadastrar atividade</span>
-        </div>,
-        {
-          className:
-            'dark:bg-gray-800 dark:text-gray-100 border dark:border-gray-700',
-        }
-      );
+      toast.error(`Erro ao ${isEditing ? 'atualizar' : 'criar'} atividade`, {
+        icon: <AlertCircle className="text-red-500" />,
+        className: 'dark:bg-gray-800 dark:text-white',
+      });
     }
   };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200 py-4 px-4 sm:py-8 sm:px-6 lg:px-8">
-      <Toaster />
+      <Toaster position="top-right" />
 
       <div className="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-xl dark:shadow-gray-900/20 p-4 sm:p-6 lg:p-8 transition-all">
         <header className="mb-4 sm:mb-6 space-y-1 sm:space-y-2 border-b dark:border-gray-700 pb-4 sm:pb-6">
@@ -90,18 +126,19 @@ export default function CadastroPage() {
             <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4" />
             Voltar para atividades
           </button>
-          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100">
-            Nova Atividade Acadêmica
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
+            {isEditing ? (
+              <>
+                <PencilLine className="h-6 w-6 text-blue-500" />
+                Editar Atividade
+              </>
+            ) : (
+              'Nova Atividade Acadêmica'
+            )}
           </h1>
-          <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-            Registre novas atividades para o campus UFC Sobral
-          </p>
         </header>
-
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-4 sm:space-y-6"
-        >
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {isEditing && <input type="hidden" {...register('id')} />}
           <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2">
             <div className="sm:col-span-2 lg:col-span-1">
               <label
@@ -244,21 +281,14 @@ export default function CadastroPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className={`w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white font-medium rounded-lg focus:ring-4 focus:ring-blue-200 dark:focus:ring-blue-900 transition-all flex items-center justify-center gap-1 sm:gap-2 ${
-                isSubmitting ? 'opacity-50 cursor-not-allowed' : ''
-              }`}
+              className="w-full sm:w-auto px-6 py-2.5 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white font-medium rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
             >
               {isSubmitting ? (
-                <>
-                  <Loader2 className="animate-spin h-4 w-4" />
-                  <span>Cadastrando...</span>
-                </>
+                <Loader2 className="animate-spin h-4 w-4" />
               ) : (
-                <>
-                  <CheckCircle2 className="h-4 w-4" />
-                  <span>Confirmar</span>
-                </>
+                <CheckCircle2 className="h-4 w-4" />
               )}
+              {isEditing ? 'Salvar Alterações' : 'Criar Atividade'}
             </button>
           </div>
         </form>
