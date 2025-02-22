@@ -29,18 +29,21 @@ type ActivityFormData = z.infer<typeof activitySchema>;
 
 export default function CadastroPage() {
   const router = useRouter();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<ActivityFormData>({
+    resolver: zodResolver(activitySchema),
+  });
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-
+  const onSubmit = (data: ActivityFormData) => {
     addActivity({
-      nome: formData.get('nome') as string,
-      responsavel: formData.get('responsavel') as string,
-      data: formData.get('data') as string,
-      descricao: formData.get('descricao') as string,
+      ...data,
+      data: new Date(data.data).toISOString(),
     });
-
+    reset();
     router.push('/listagem');
   };
 
