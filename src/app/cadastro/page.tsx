@@ -119,7 +119,7 @@ export default function CadastroPage() {
                       ? 'border-red-500 focus:ring-red-500 bg-red-50 dark:bg-red-900/20'
                       : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500 bg-white dark:bg-gray-700'
                   } text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400`}
-                  placeholder="Ex: Workshop de Inovação"
+                  placeholder="Ex: Semana da Engenharia de Computação de Sobral"
                 />
                 {errors.nome && (
                   <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
@@ -151,7 +151,7 @@ export default function CadastroPage() {
                       ? 'border-red-500 focus:ring-red-500 bg-red-50 dark:bg-red-900/20'
                       : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500 bg-white dark:bg-gray-700'
                   } text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400`}
-                  placeholder="Ex: Coordenação de Extensão"
+                  placeholder="Ex: Prof. Thiago Iachiley"
                 />
                 {errors.responsavel && (
                   <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
