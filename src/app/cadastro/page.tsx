@@ -5,6 +5,27 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { addActivity } from '@/app/lib/data';
+import { CircleAlert } from 'lucide-react';
+
+const activitySchema = z.object({
+  nome: z
+    .string()
+    .min(3, 'O nome deve ter pelo menos 3 caracteres')
+    .max(100, 'O nome deve ter no máximo 100 caracteres'),
+  responsavel: z
+    .string()
+    .min(3, 'O responsável deve ter pelo menos 3 caracteres')
+    .max(100, 'O responsável deve ter no máximo 100 caracteres'),
+  data: z
+    .string()
+    .refine((val) => new Date(val) > new Date(), 'A data deve ser futura'),
+  descricao: z
+    .string()
+    .min(10, 'A descrição deve ter pelo menos 10 caracteres')
+    .max(500, 'A descrição deve ter no máximo 500 caracteres'),
+});
+
+type ActivityFormData = z.infer<typeof activitySchema>;
 
 export default function CadastroPage() {
   const router = useRouter();
