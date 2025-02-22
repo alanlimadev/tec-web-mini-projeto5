@@ -71,3 +71,18 @@ export const removeParticipant = (id: string, index: number) => {
     saveActivitiesToStorage(updatedActivities);
   }
 };
+
+export const updateActivity = (id: string, updatedData: ActivityForm) => {
+  const activities = getActivitiesFromStorage();
+  const index = activities.findIndex((a) => a.id === id);
+  if (index > -1) {
+    const updatedActivity = {
+      ...activities[index],
+      ...updatedData,
+      participantes: activities[index].participantes,
+    };
+    const updatedActivities = [...activities];
+    updatedActivities[index] = updatedActivity;
+    saveActivitiesToStorage(updatedActivities);
+  }
+};
