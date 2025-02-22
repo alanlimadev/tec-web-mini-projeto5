@@ -4,7 +4,14 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { getActivities, removeActivity } from '@/app/lib/data';
 import { Activity } from '@/app/types/activity';
-import { ArrowDown, Trash2, Calendar, User, ClipboardList } from 'lucide-react';
+import {
+  ArrowDown,
+  Trash2,
+  Calendar,
+  User,
+  ClipboardList,
+  Pencil,
+} from 'lucide-react';
 
 export default function ListagemPage() {
   const [activities, setActivities] = useState<Activity[]>([]);
@@ -130,14 +137,24 @@ export default function ListagemPage() {
                     </div>
                   </Link>
 
-                  <button
-                    onClick={() => handleDelete(activity.id)}
-                    className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 
-                      rounded-lg transition-colors duration-200"
-                    title="Excluir atividade"
-                  >
-                    <Trash2 className="h-5 w-5" />
-                  </button>
+                  <div className="flex items-center gap-1">
+                    <Link
+                      href={`/cadastro?id=${activity.id}`}
+                      className="p-1.5 text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/10 
+                        rounded-lg transition-colors"
+                      title="Editar atividade"
+                    >
+                      <Pencil className="h-5 w-5" />
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(activity.id)}
+                      className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/10 
+                        rounded-lg transition-colors"
+                      title="Excluir atividade"
+                    >
+                      <Trash2 className="h-5 w-5" />
+                    </button>
+                  </div>
                 </div>
               </div>
             ))
