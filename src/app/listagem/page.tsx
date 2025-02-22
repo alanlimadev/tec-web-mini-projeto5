@@ -5,12 +5,12 @@ import { useEffect, useState } from 'react';
 import { getActivities, removeActivity } from '@/app/lib/data';
 import { Activity } from '@/app/types/activity';
 import {
-  ArrowDown,
   Trash2,
   Calendar,
   User,
   ClipboardList,
   Pencil,
+  Download,
 } from 'lucide-react';
 
 export default function ListagemPage() {
@@ -80,11 +80,10 @@ export default function ListagemPage() {
 
           <button
             onClick={handleExportCSV}
-            className="w-full sm:w-auto px-4 py-2 bg-green-500 hover:bg-green-600 
-              text-white text-sm rounded-lg transition-all flex items-center justify-center gap-2"
+            className="w-full sm:w-auto px-4 py-2 bg-transparent hover:hover:bg-gray-200 dark:hover:bg-gray-700
+              text-gray-600 dark:text-gray-50 text-sm rounded-md transition-all flex items-center justify-center gap-2"
           >
-            <ArrowDown className="h-4 w-4" />
-            <span>Exportar</span>
+            <Download className="h-4 w-4" />
           </button>
         </div>
 
