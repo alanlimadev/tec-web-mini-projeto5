@@ -66,7 +66,7 @@ export default function DetalhesPage() {
         <header className="mb-6 sm:mb-8 border-b dark:border-gray-700 pb-4 sm:pb-6">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-gray-100 flex items-center gap-2">
             <ClipboardText className="h-6 w-6 text-blue-500" />
-            {activity.nome}
+            <span className="flex-1">{activity.nome}</span>
           </h1>
           <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
             Detalhes completos da atividade acadêmica
@@ -78,7 +78,7 @@ export default function DetalhesPage() {
             <div className="p-4 bg-gray-50 dark:bg-gray-700/20 rounded-lg">
               <div className="flex items-center gap-3 mb-2">
                 <User className="h-5 w-5 text-gray-500 dark:text-gray-400" />
-                <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300">
+                <h2 className="text-sm font-medium text-gray-700 dark:text-gray-300 flex-1">
                   Responsável pela Atividade
                 </h2>
               </div>
@@ -111,9 +111,9 @@ export default function DetalhesPage() {
                 Descrição Completa
               </h2>
             </div>
-            <p className="text-gray-900 dark:text-gray-200 pl-8 whitespace-pre-line">
+            <p className="text-gray-900 dark:text-gray-200 pl-8 whitespace-pre-line overflow-hidden">
               {activity.descricao || (
-                <span className="text-gray-500 italic">
+                <span className="text-gray-500 italic ">
                   Nenhuma descrição fornecida
                 </span>
               )}
