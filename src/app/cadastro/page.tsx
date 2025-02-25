@@ -112,10 +112,10 @@ function CadastroContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-200 py-4 px-4 sm:py-8 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-4 px-4 sm:py-8 sm:px-6 lg:px-8">
       <Toaster position="top-right" />
 
-      <div className="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-xl dark:shadow-gray-900/20 p-4 sm:p-6 lg:p-8 transition-all">
+      <div className="max-w-3xl mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-lg dark:shadow-xl dark:shadow-gray-900/20 p-4 sm:p-6 lg:p-8 ">
         <header className="mb-4 sm:mb-6 space-y-1 sm:space-y-2 border-b dark:border-gray-700 pb-4 sm:pb-6">
           <button
             onClick={() => router.push('/listagem')}
@@ -150,7 +150,7 @@ function CadastroContent() {
                 <input
                   id="nome"
                   {...register('nome')}
-                  className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm border rounded-lg focus:ring-2 focus:border-transparent transition-all ${
+                  className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm border rounded-lg focus:ring-2 focus:border-transparent  ${
                     errors.nome
                       ? 'border-red-500 focus:ring-red-500 bg-red-50 dark:bg-red-900/20'
                       : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500 bg-white dark:bg-gray-700'
@@ -182,7 +182,7 @@ function CadastroContent() {
                 <input
                   id="responsavel"
                   {...register('responsavel')}
-                  className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm border rounded-lg focus:ring-2 focus:border-transparent transition-all ${
+                  className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm border rounded-lg focus:ring-2 focus:border-transparent l ${
                     errors.responsavel
                       ? 'border-red-500 focus:ring-red-500 bg-red-50 dark:bg-red-900/20'
                       : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500 bg-white dark:bg-gray-700'
@@ -215,7 +215,7 @@ function CadastroContent() {
                   type="date"
                   id="data"
                   {...register('data')}
-                  className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm border rounded-lg focus:ring-2 focus:border-transparent transition-all ${
+                  className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm border rounded-lg focus:ring-2 focus:border-transparent  ${
                     errors.data
                       ? 'border-red-500 focus:ring-red-500 bg-red-50 dark:bg-red-900/20'
                       : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500 bg-white dark:bg-gray-700'
@@ -246,7 +246,7 @@ function CadastroContent() {
                 <textarea
                   id="descricao"
                   {...register('descricao')}
-                  className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm border rounded-lg focus:ring-2 focus:border-transparent transition-all ${
+                  className={`w-full px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm border rounded-lg focus:ring-2 focus:border-transparent  ${
                     errors.descricao
                       ? 'border-red-500 focus:ring-red-500 bg-red-50 dark:bg-red-900/20'
                       : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500 bg-white dark:bg-gray-700'
@@ -272,7 +272,7 @@ function CadastroContent() {
             <button
               type="button"
               onClick={() => router.push('/listagem')}
-              className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors flex items-center justify-center gap-1 sm:gap-2"
+              className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-2.5 text-xs sm:text-sm text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 flex items-center justify-center gap-1 sm:gap-2"
             >
               <ArrowLeft className="h-3 w-3 sm:h-4 sm:w-4" />
               <span>Cancelar</span>
